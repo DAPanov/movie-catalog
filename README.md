@@ -1,4 +1,4 @@
-# FastAPI URL Shortener
+# FastAPI Movie catalog
 
 ## Develop
 
@@ -10,7 +10,7 @@ Setup:
 
 Go to workdir:
 ```shell
-cd url-shortener
+cd movie-catalog
 
 ```
 
