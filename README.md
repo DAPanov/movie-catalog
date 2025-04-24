@@ -4,7 +4,7 @@
 
 Setup:
 
- - Mark url-shortener folder as source root
+ - Mark movie-catalog folder as source root
 
 ### Run
 
