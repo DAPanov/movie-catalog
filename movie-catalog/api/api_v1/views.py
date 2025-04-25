@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from api.api_v1.crud import MOVIE_LIST
-from api.api_v1.dependecies import prefetch_movie
+from api.api_v1.dependencies import prefetch_movie
 from schemas.movie import Movie
 
 router = APIRouter(tags=["Movies"])
