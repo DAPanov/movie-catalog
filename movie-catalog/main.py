@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import Response
+from starlette import status
 
 from schemas.movie import Movie
 
@@ -41,13 +43,20 @@ async def root(
     }
 
 
-@app.get("/movie-list/", response_model=list[Movie])
 @app.get("/movie-list", response_model=list[Movie])
 async def get_movies_list() -> list[Movie]:
     return MOVIE_LIST
 
 
 @app.get("/movie/{movie_id}", response_model=Movie)
-async def get_movie_by_id(movie_id: int) -> Movie:
-    movie = next((movie for movie in MOVIE_LIST if movie.id == movie_id), None)
-    return movie
+async def get_movie_by_id(movie_id: int):
+    movie: Movie | None = next(
+        (movie for movie in MOVIE_LIST if movie.id == movie_id),
+        None,
+    )
+    if movie:
+        return movie
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Movie with id={movie_id} not found",
+    )
