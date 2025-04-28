@@ -1,14 +1,24 @@
-import random
-
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class MovieBase(BaseModel):
-    id: int = random.randint(4, 1000)
+    id: int
+    title: str
+    description: str
+    year: int
+
+
+class MovieCreate(BaseModel):
+    """
+    Модель для создания фильма
+    """
+
     title: str
     description: str
     year: int
 
 
 class Movie(MovieBase):
-    pass
+    """
+    Модель для фильма
+    """
