@@ -2,20 +2,16 @@ from pydantic import BaseModel, Field
 
 
 class MovieBase(BaseModel):
-    id: int
+    slug: str
     title: str
     description: str
     year: int
 
 
-class MovieCreate(BaseModel):
+class MovieCreate(MovieBase):
     """
     Модель для создания фильма
     """
-
-    title: str
-    description: str
-    year: int
 
 
 class Movie(MovieBase):
