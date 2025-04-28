@@ -19,12 +19,11 @@ async def get_movies_list() -> list[Movie]:
     return MOVIE_LIST
 
 
-@router.get("/movie/{movie_id}", response_model=Movie)
+@router.get("/movie/{slug}", response_model=Movie)
 async def get_movie_by_id(movie: Annotated[Movie, Depends(prefetch_movie)]):
     return movie
 
 
 @router.post("/movie", response_model=Movie, status_code=status.HTTP_201_CREATED)
 async def create_movie(movie_create: MovieCreate):
-    movie_id = random.randint(4, 1000)
-    return Movie(id=movie_id, **movie_create.model_dump())
+    return Movie(**movie_create.model_dump())
