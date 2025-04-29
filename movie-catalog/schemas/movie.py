@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from annotated_types import MaxLen
+from annotated_types import MaxLen, Len
 from pydantic import BaseModel, Field
 
 
@@ -11,6 +11,7 @@ DescriptionString = Annotated[
 
 
 class MovieBase(BaseModel):
+    title: str
     description: DescriptionString = ""
     year: int = ""
 
@@ -20,7 +21,15 @@ class Movie(MovieBase):
     Модель для фильма
     """
 
-    title: str
+    slug: Annotated[str, Len(min_length=1, max_length=25)]
+    notes: str = ""
+
+
+class MovieRead(MovieBase):
+    """
+    Схема для чтения данных о фильме
+    """
+
     slug: str
 
 
@@ -42,7 +51,10 @@ class MoviePartialUpdate(MovieBase):
     year: int | None = None
 
 
-class MovieCreate(Movie):
+class MovieCreate(MovieBase):
     """
     Модель для создания фильма
     """
+
+    slug: Annotated[str, Len(min_length=1, max_length=25)]
+    notes: str = ""
