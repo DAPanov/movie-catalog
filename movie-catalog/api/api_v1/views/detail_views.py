@@ -5,8 +5,7 @@ from starlette import status
 
 from api.api_v1.crud import storage
 from api.api_v1.dependencies import prefetch_movie
-from schemas.movie import Movie
-
+from schemas.movie import Movie, MovieUpdate
 
 router = APIRouter(
     prefix="/{slug}",
@@ -25,14 +24,23 @@ router = APIRouter(
 )
 
 
+MovieBySlug = Annotated[Movie, Depends(prefetch_movie)]
+
+
 @router.get("/", response_model=Movie)
-async def get_movie_by_id(movie: Annotated[Movie, Depends(prefetch_movie)]) -> Movie:
+def get_movie_by_id(movie: MovieBySlug) -> Movie:
     return movie
+
+
+@router.put("/", response_model=Movie)
+def update_movie(movie: MovieBySlug, movie_in: MovieUpdate) -> Movie:
+
+    return storage.update(movie, movie_in)
 
 
 @router.delete(
     "/",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_movie(movie: Annotated[Movie, Depends(prefetch_movie)]) -> None:
+def delete_movie(movie: MovieBySlug) -> None:
     storage.delete(movie=movie)
