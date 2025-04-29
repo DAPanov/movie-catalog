@@ -5,7 +5,11 @@ from starlette import status
 
 from api.api_v1.crud import storage
 from api.api_v1.dependencies import prefetch_movie
-from schemas.movie import Movie, MovieUpdate
+from schemas.movie import (
+    Movie,
+    MovieUpdate,
+    MoviePartialUpdate,
+)
 
 router = APIRouter(
     prefix="/{slug}",
@@ -34,8 +38,12 @@ def get_movie_by_id(movie: MovieBySlug) -> Movie:
 
 @router.put("/", response_model=Movie)
 def update_movie(movie: MovieBySlug, movie_in: MovieUpdate) -> Movie:
-
     return storage.update(movie, movie_in)
+
+
+@router.patch("/", response_model=Movie)
+def update_movie_partial(movie: MovieBySlug, movie_in: MoviePartialUpdate) -> Movie:
+    return storage.partial_update(movie, movie_in)
 
 
 @router.delete(
