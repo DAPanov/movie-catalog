@@ -27,3 +27,23 @@ async def get_movie_by_id(movie: Annotated[Movie, Depends(prefetch_movie)]) -> M
 @router.post("/movie", response_model=Movie, status_code=status.HTTP_201_CREATED)
 async def create_movie(movie_create: MovieCreate) -> Movie:
     return storage.create(movie_create)
+
+
+@router.delete(
+    "/movie/{slug}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "Movie not found",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Movie with 'slug' not found",
+                    },
+                },
+            },
+        }
+    },
+)
+async def delete_movie(movie: Annotated[Movie, Depends(prefetch_movie)]) -> None:
+    storage.delete(movie=movie)

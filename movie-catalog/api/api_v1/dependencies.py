@@ -12,5 +12,5 @@ def prefetch_movie(slug: str) -> Movie:
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Movie with slug={slug} not found",
+        detail=f"Movie with slug={slug!r} not found",
     )
