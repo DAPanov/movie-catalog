@@ -13,7 +13,7 @@ DescriptionString = Annotated[
 class MovieBase(BaseModel):
     title: str
     description: DescriptionString = ""
-    year: int = ""
+    year: int
 
 
 class Movie(MovieBase):
