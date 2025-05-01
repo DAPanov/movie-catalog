@@ -9,13 +9,20 @@ from schemas.movie import (
     MoviePartialUpdate,
 )
 
+from core.config import JSON_STORAGE_FILEPATH
+
 
 class MovieStorage(BaseModel):
     slug_to_movie: dict[str, Movie] = {}
 
-    def save_to_file(self):
-        db = Path("db.json")
-        db.write_text(self.model_dump_json())
+    def save_to_file(self) -> None:
+        JSON_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=2))
+
+    @classmethod
+    def load_from_file(cls) -> "MovieStorage":
+        if not JSON_STORAGE_FILEPATH.exists():
+            return MovieStorage()
+        return cls.model_validate_json(JSON_STORAGE_FILEPATH.read_text())
 
     def get(self) -> list[Movie]:
         return list(self.slug_to_movie.values())
@@ -51,8 +58,7 @@ class MovieStorage(BaseModel):
         return movie
 
 
-def create_storage() -> MovieStorage:
-    example_storage = MovieStorage()
+def create_examples(example_storage: MovieStorage) -> None:
     example_storage.create(
         MovieCreate(
             slug="shawshank",
@@ -79,14 +85,13 @@ def create_storage() -> MovieStorage:
             year=2008,
         )
     )
-    Path("db.json").write_text(example_storage.model_dump_json())
-    return example_storage
+    example_storage.save_to_file()
 
 
 try:
-    storage = MovieStorage().model_validate_json(Path("db.json").read_text())
+    storage = MovieStorage().load_from_file()
+    create_examples(storage)
 except ValidationError:
-    Path("db.json").rename("db_corrupted.json")
-    storage = create_storage()
-except FileNotFoundError:
-    storage = create_storage()
+    JSON_STORAGE_FILEPATH.rename("db_corrupted.json")
+    storage = MovieStorage()
+    create_examples(storage)
