@@ -28,6 +28,19 @@ class MovieStorage(BaseModel):
             return MovieStorage()
         return cls.model_validate_json(JSON_STORAGE_FILEPATH.read_text())
 
+    def init_storage_from_file(self) -> None:
+        try:
+            data = MovieStorage.load_from_file()
+        except ValidationError:
+            JSON_STORAGE_FILEPATH.rename("db_corrupted.json")
+            self.save_to_file()
+            log.warning("Movie storage was corrupted, creating a new one")
+            return
+        self.slug_to_movie.update(
+            data.slug_to_movie,
+        )
+        log.warning("Movie storage loaded from file")
+
     def get(self) -> list[Movie]:
         return list(self.slug_to_movie.values())
 
@@ -90,15 +103,6 @@ def create_examples(example_storage: MovieStorage) -> None:
             year=2008,
         )
     )
-    example_storage.save_to_file()
 
 
-try:
-    storage = MovieStorage().load_from_file()
-    log.warning("Movie storage loaded from file")
-    create_examples(storage)
-except ValidationError:
-    JSON_STORAGE_FILEPATH.rename("db_corrupted.json")
-    storage = MovieStorage()
-    log.warning("Movie storage was corrupted, creating a new one")
-    create_examples(storage)
+storage = MovieStorage()
