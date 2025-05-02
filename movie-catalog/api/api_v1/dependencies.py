@@ -1,8 +1,12 @@
-from fastapi import HTTPException
-from starlette import status
+import logging
+
+from fastapi import HTTPException, BackgroundTasks, status, Request
+
 
 from api.api_v1.crud import storage
 from schemas.movie import Movie
+
+log = logging.getLogger(__name__)
 
 
 def prefetch_movie(slug: str) -> Movie:
@@ -14,3 +18,10 @@ def prefetch_movie(slug: str) -> Movie:
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Movie with slug={slug!r} not found",
     )
+
+
+def save_storage_state(request: Request, background_tasks: BackgroundTasks):
+    yield
+    if request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+        log.info("Add save storage state to background tasks")
+        background_tasks.add_task(storage.save_to_file)

@@ -39,17 +39,17 @@ def get_movie_by_id(movie: MovieBySlug) -> Movie:
 
 @router.put("/", response_model=MovieRead)
 def update_movie(
-    movie: MovieBySlug, movie_in: MovieUpdate, background_tasks: BackgroundTasks
+    movie: MovieBySlug,
+    movie_in: MovieUpdate,
 ) -> Movie:
-    background_tasks.add_task(storage.save_to_file)
     return storage.update(movie, movie_in)
 
 
 @router.patch("/", response_model=MovieRead)
 def update_movie_partial(
-    movie: MovieBySlug, movie_in: MoviePartialUpdate, background_tasks: BackgroundTasks
+    movie: MovieBySlug,
+    movie_in: MoviePartialUpdate,
 ) -> Movie:
-    background_tasks.add_task(storage.save_to_file)
     return storage.partial_update(movie, movie_in)
 
 
@@ -57,6 +57,7 @@ def update_movie_partial(
     "/",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_movie(movie: MovieBySlug, background_tasks: BackgroundTasks) -> None:
-    background_tasks.add_task(storage.save_to_file)
+def delete_movie(
+    movie: MovieBySlug,
+) -> None:
     storage.delete(movie=movie)
