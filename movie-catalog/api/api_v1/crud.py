@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from pydantic import BaseModel, ValidationError
@@ -11,12 +12,15 @@ from schemas.movie import (
 
 from core.config import JSON_STORAGE_FILEPATH
 
+log = logging.getLogger(__name__)
+
 
 class MovieStorage(BaseModel):
     slug_to_movie: dict[str, Movie] = {}
 
     def save_to_file(self) -> None:
         JSON_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=2))
+        log.info("Data successfully saved to file")
 
     @classmethod
     def load_from_file(cls) -> "MovieStorage":
@@ -35,6 +39,7 @@ class MovieStorage(BaseModel):
             **movie_in.model_dump(),
         )
         self.slug_to_movie[movie.slug] = movie
+        log.info("Movie %s created", movie.title)
         self.save_to_file()
         return movie
 
@@ -90,8 +95,10 @@ def create_examples(example_storage: MovieStorage) -> None:
 
 try:
     storage = MovieStorage().load_from_file()
+    log.warning("Movie storage loaded from file")
     create_examples(storage)
 except ValidationError:
     JSON_STORAGE_FILEPATH.rename("db_corrupted.json")
     storage = MovieStorage()
+    log.warning("Movie storage was corrupted, creating a new one")
     create_examples(storage)
