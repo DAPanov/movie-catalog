@@ -13,13 +13,14 @@ from schemas.movie import (
     MovieRead,
 )
 
-from api.api_v1.dependencies import save_storage_state
+from api.api_v1.dependencies import save_storage_state, api_token_required
 
 router = APIRouter(
     prefix="/movies",
     tags=["Movies"],
     dependencies=[
         Depends(save_storage_state),
+        Depends(api_token_required),
     ],
 )
 
