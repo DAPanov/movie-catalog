@@ -13,15 +13,30 @@ from schemas.movie import (
     MovieRead,
 )
 
-from api.api_v1.dependencies import save_storage_state, api_token_required
+from api.api_v1.dependencies import (
+    save_storage_state,
+    api_token_required_for_unsafe_methods,
+)
 
 router = APIRouter(
     prefix="/movies",
     tags=["Movies"],
     dependencies=[
         Depends(save_storage_state),
-        Depends(api_token_required),
+        Depends(api_token_required_for_unsafe_methods),
     ],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Unauthenticated. Only for unsafe methods",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Invalid API token",
+                    }
+                }
+            },
+        },
+    },
 )
 
 
