@@ -16,6 +16,7 @@ from schemas.movie import (
 from api.api_v1.dependencies import (
     save_storage_state,
     api_token_required_for_unsafe_methods,
+    user_basic_auth_required,
 )
 
 router = APIRouter(
@@ -23,7 +24,8 @@ router = APIRouter(
     tags=["Movies"],
     dependencies=[
         Depends(save_storage_state),
-        Depends(api_token_required_for_unsafe_methods),
+        # Depends(api_token_required_for_unsafe_methods),
+        Depends(user_basic_auth_required),
     ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
@@ -45,6 +47,10 @@ def get_movies_list() -> list[Movie]:
     return storage.get()
 
 
-@router.post("/", response_model=MovieRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    response_model=MovieRead,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_movie(movie_create: MovieCreate) -> Movie:
     return storage.create(movie_create)
