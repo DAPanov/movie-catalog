@@ -16,7 +16,8 @@ from schemas.movie import (
 from api.api_v1.dependencies import (
     save_storage_state,
     api_token_required_for_unsafe_methods,
-    user_basic_auth_required,
+    user_basic_auth_required_for_unsafe_methods,
+    api_token_or_user_basic_auth_required_for_unsafe_methods,
 )
 
 router = APIRouter(
@@ -25,7 +26,8 @@ router = APIRouter(
     dependencies=[
         Depends(save_storage_state),
         # Depends(api_token_required_for_unsafe_methods),
-        Depends(user_basic_auth_required),
+        # Depends(user_basic_auth_required_for_unsafe_methods),
+        Depends(api_token_or_user_basic_auth_required_for_unsafe_methods),
     ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
