@@ -1,4 +1,5 @@
 import logging
+
 from typing import Annotated
 
 from fastapi import (
@@ -6,7 +7,7 @@ from fastapi import (
     BackgroundTasks,
     status,
     Request,
-    Query,
+    Header,
 )
 
 
@@ -46,7 +47,7 @@ def save_storage_state(request: Request, background_tasks: BackgroundTasks):
 
 def api_token_required_for_unsafe_methods(
     request: Request,
-    api_token: Annotated[str, Query()] = "",
+    api_token: Annotated[str, Header(alias="x-auth-token")] = "",
 ):
     if request.method not in UNSAFE_METHODS:
         return
