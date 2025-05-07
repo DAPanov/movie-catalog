@@ -72,7 +72,9 @@ def save_storage_state(request: Request, background_tasks: BackgroundTasks):
 def validate_api_token(
     api_token: HTTPAuthorizationCredentials,
 ):
-    if redis_tokens.sismember(config.REDIS_SET_TOKENS_NAME, api_token.credentials):
+    if redis_tokens.token_exists(
+        api_token.credentials,
+    ):
         return
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
