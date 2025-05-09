@@ -58,6 +58,8 @@ class MovieStorage(BaseModel):
             name=config.REDIS_HASH_MOVIES_CATALOG_NAME,
             key=slug,
         )
+        if movie is None:
+            return None
         return Movie.model_validate_json(movie)
 
     def create(self, movie_in: MovieCreate) -> Movie:
