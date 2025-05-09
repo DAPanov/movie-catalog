@@ -22,7 +22,7 @@ class Movie(MovieBase):
     """
 
     slug: Annotated[str, Len(min_length=1, max_length=25)]
-    notes: str = ""
+    notes: str = "Admins notes"
 
 
 class MovieRead(MovieBase):
@@ -57,4 +57,3 @@ class MovieCreate(MovieBase):
     """
 
     slug: Annotated[str, Len(min_length=1, max_length=25)]
-    notes: str = ""
