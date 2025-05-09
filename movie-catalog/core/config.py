@@ -10,18 +10,6 @@ LOG_FORMAT: str = (
 )
 
 
-API_TOKENS: frozenset[str] = frozenset(
-    {
-        "L6keDgGDoxpcleNqis752g",
-        "3_9p1uM0k3Ua5qWkdjOpiw",
-    }
-)
-
-USERS_DB: dict[str, str] = {
-    "sam": "password",
-    "bob": "qwerty",
-}
-
 REDIS_HOST: str = "localhost"
 REDIS_PORT: int = 6379
 REDIS_DB: int = 0
