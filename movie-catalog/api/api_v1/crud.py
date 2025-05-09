@@ -51,16 +51,16 @@ class MovieStorage(BaseModel):
         log.warning("Movie storage loaded from file")
 
     def get(self) -> list[Movie]:
-        return list(self.slug_to_movie.values())
+        data = redis.hvals(config.REDIS_HASH_MOVIES_CATALOG_NAME)
+        return [Movie.model_validate_json(movie) for movie in data]
 
     def get_by_slug(self, slug: str) -> Movie | None:
-        movie = redis.hget(
+        if data := redis.hget(
             name=config.REDIS_HASH_MOVIES_CATALOG_NAME,
             key=slug,
-        )
-        if movie is None:
-            return None
-        return Movie.model_validate_json(movie)
+        ):
+            return Movie.model_validate_json(data)
+        return None
 
     def create(self, movie_in: MovieCreate) -> Movie:
         movie = Movie(
