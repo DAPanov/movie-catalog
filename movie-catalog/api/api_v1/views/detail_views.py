@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter, BackgroundTasks
+from fastapi import Depends, APIRouter
 from starlette import status
 
 from api.api_v1.crud import storage

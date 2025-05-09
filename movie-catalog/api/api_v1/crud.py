@@ -1,7 +1,6 @@
 import logging
-from pathlib import Path
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 from redis import Redis
 
 from core import config
@@ -11,8 +10,6 @@ from schemas.movie import (
     MovieUpdate,
     MoviePartialUpdate,
 )
-
-from core.config import JSON_STORAGE_FILEPATH
 
 log = logging.getLogger(__name__)
 
@@ -26,29 +23,6 @@ redis = Redis(
 
 class MovieStorage(BaseModel):
     slug_to_movie: dict[str, Movie] = {}
-
-    def save_to_file(self) -> None:
-        JSON_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=2))
-        log.info("Data successfully saved to file")
-
-    @classmethod
-    def load_from_file(cls) -> "MovieStorage":
-        if not JSON_STORAGE_FILEPATH.exists():
-            return MovieStorage()
-        return cls.model_validate_json(JSON_STORAGE_FILEPATH.read_text())
-
-    def init_storage_from_file(self) -> None:
-        try:
-            data = MovieStorage.load_from_file()
-        except ValidationError:
-            JSON_STORAGE_FILEPATH.rename("db_corrupted.json")
-            self.save_to_file()
-            log.warning("Movie storage was corrupted, creating a new one")
-            return
-        self.slug_to_movie.update(
-            data.slug_to_movie,
-        )
-        log.warning("Movie storage loaded from file")
 
     def get(self) -> list[Movie]:
         data = redis.hvals(config.REDIS_HASH_MOVIES_CATALOG_NAME)
@@ -79,7 +53,7 @@ class MovieStorage(BaseModel):
         return movie
 
     def delete_by_slug(self, slug: str) -> None:
-        redis.hdel(config.REDIS_HASH_MOVIES_CATALOG_NAME, *[slug])
+        redis.hdel(config.REDIS_HASH_MOVIES_CATALOG_NAME, slug)
         return self.slug_to_movie.pop(slug, None)
 
     def delete(self, movie: Movie) -> None:

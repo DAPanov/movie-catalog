@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from annotated_types import MaxLen, Len
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 DescriptionString = Annotated[
