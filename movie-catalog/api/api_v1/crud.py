@@ -22,7 +22,6 @@ redis = Redis(
 
 
 class MovieStorage(BaseModel):
-    slug_to_movie: dict[str, Movie] = {}
 
     def get(self) -> list[Movie]:
         data = redis.hvals(config.REDIS_HASH_MOVIES_CATALOG_NAME)
