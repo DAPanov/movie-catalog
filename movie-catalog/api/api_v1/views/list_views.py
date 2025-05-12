@@ -6,7 +6,7 @@ from fastapi import (
 )
 
 
-from api.api_v1.crud import storage
+from api.api_v1.crud import storage, MovieAlreadyExistsError
 from schemas.movie import (
     Movie,
     MovieCreate,
@@ -34,16 +34,6 @@ router = APIRouter(
                 }
             },
         },
-        status.HTTP_409_CONFLICT: {
-            "description": "Movie already exists",
-            "content": {
-                "application/json": {
-                    "example": {
-                        "detail": "Movie with slug='foobar' already exists.",
-                    }
-                }
-            },
-        },
     },
 )
 
@@ -57,11 +47,24 @@ def get_movies_list() -> list[Movie]:
     "/",
     response_model=MovieRead,
     status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_409_CONFLICT: {
+            "description": "Movie already exists",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Movie with slug='name' already exists.",
+                    }
+                }
+            },
+        },
+    },
 )
 def create_movie(movie_create: MovieCreate) -> Movie:
-    if not storage.get_by_slug(movie_create.slug):
-        return storage.create(movie_create)
-    raise HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail=f"Movie with slug={movie_create.slug!r} already exists",
-    )
+    try:
+        return storage.create_or_raise_if_exists(movie_create)
+    except MovieAlreadyExistsError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Movie with slug={movie_create.slug!r} already exists",
+        )
