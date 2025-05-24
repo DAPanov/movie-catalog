@@ -40,4 +40,4 @@ def list():
     Get a list of all tokens.
     """
     for idx, token in enumerate(redis_tokens.get_tokens(), start=1):
-        print(f"{idx}. {token}")
+        print(f"{idx}. [green bold]{token}[/green bold]")
