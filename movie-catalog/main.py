@@ -22,7 +22,7 @@ app.include_router(router)
 @app.get("/")
 async def root(
     request: Request,
-):
+) -> dict[str, str]:
     docs_url = request.url.replace(path="/docs")
     return {
         "message": "Hello World",

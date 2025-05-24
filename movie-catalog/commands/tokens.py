@@ -5,7 +5,7 @@ from rich import print
 from rich.box import MARKDOWN
 from rich.markdown import Markdown
 
-from api.api_v1.auth.services import redis_tokens
+from api.api_v1.auth.services import redis_tokens as tokens
 
 app = typer.Typer(
     name="token",
@@ -21,7 +21,7 @@ def check(
         str,
         typer.Argument(help="The token to check"),
     ],
-):
+) -> None:
     """
     Check of the passed token is valid - exists or not.
     """
@@ -29,29 +29,28 @@ def check(
         f"Token: [bold]{token}[/bold]",
         (
             "[green]exists[/green]."
-            if redis_tokens.token_exists(token)
+            if tokens.token_exists(token)
             else "[red]doesn't exist[/red]."
         ),
     )
 
 
 @app.command(name="list")
-def list_tokens():
+def list_tokens() -> None:
     """
     Get list of all tokens.
     """
     print(Markdown("# List of all available tokens."))
-    for idx, token in enumerate(redis_tokens.get_tokens(), start=1):
+    for idx, token in enumerate(tokens.get_tokens(), start=1):
         print(f"{idx}. [bold]{token}[/bold]")
 
 
 @app.command()
-def create():
+def create() -> None:
     """
     Create a new token and save it to db.
     """
-    token = redis_tokens.generate_token()
-    redis_tokens.add_token(token)
+    token = tokens.generate_and_save_token()
     print(f"Token: [bold green]{token}[/bold green] created and saved to db.")
 
 
@@ -60,14 +59,18 @@ def add(token: str) -> None:
     """
     Add a new token to db.
     """
-    redis_tokens.add_token(token)
+    tokens.add_token(token)
     print(f"Token: [bold green]{token}[/bold green] saved to db.")
 
 
-@app.command()
-def rm(token: str) -> None:
+@app.command(name="rm")
+def delete(token: str) -> None:
     """
     Delete a token from db.
     """
-    redis_tokens.delete_token(token)
+    if not tokens.token_exists(token):
+        print(f"Token: [bold red]{token}[/bold red] not found.")
+        return
+
+    tokens.delete_token(token)
     print(f"Token: [bold red]{token}[/bold red] deleted from db.")

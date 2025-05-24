@@ -10,12 +10,13 @@ redis = Redis(
 )
 
 
-def main():
+def main() -> None:
     print(redis.ping())
     redis.set("name", "foo")
     print(redis.get("name"))
     redis.delete("name")
     print(redis.get("name"))
+
 
 if __name__ == "__main__":
     main()

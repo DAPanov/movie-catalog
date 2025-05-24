@@ -38,11 +38,8 @@ class MovieUpdate(MovieBase):
     Модель для обновления фильма
     """
 
-    description: DescriptionString
-    year: int
 
-
-class MoviePartialUpdate(MovieBase):
+class MoviePartialUpdate(BaseModel):
     """
     Модель для частичного обновления фильма
     """
