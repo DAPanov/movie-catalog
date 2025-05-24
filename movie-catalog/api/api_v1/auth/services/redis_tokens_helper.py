@@ -1,3 +1,5 @@
+from typing import Awaitable
+
 from redis import Redis
 
 from api.api_v1.auth.services.tokens_helper import AbstractTokensHelper
@@ -20,6 +22,9 @@ class RedisTokensHelper(AbstractTokensHelper):
             decode_responses=True,
         )
         self.tokens_set_name = tokens_set_name
+
+    def get_tokens(self) -> set[str]:
+        return self.redis.smembers(self.tokens_set_name)
 
     def token_exists(self, token: str) -> bool:
         return bool(

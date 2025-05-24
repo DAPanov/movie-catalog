@@ -2,6 +2,7 @@ from typing import Annotated
 
 import typer
 from rich import print
+from rich.box import MARKDOWN
 
 from api.api_v1.auth.services import redis_tokens
 
@@ -31,3 +32,12 @@ def check(
             else "[red]doesn't exist[/red]."
         ),
     )
+
+
+@app.command()
+def list():
+    """
+    Get a list of all tokens.
+    """
+    for idx, token in enumerate(redis_tokens.get_tokens(), start=1):
+        print(f"{idx}. {token}")
