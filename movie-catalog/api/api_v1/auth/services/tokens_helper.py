@@ -32,6 +32,12 @@ class AbstractTokensHelper(ABC):
         Get a list of tokens.
         """
 
+    @abstractmethod
+    def delete_token(self, token: str) -> None:
+        """
+        Delete token.
+        """
+
     @classmethod
     def generate_token(cls) -> str:
         return secrets.token_urlsafe(16)
