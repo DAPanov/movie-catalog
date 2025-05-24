@@ -9,3 +9,12 @@ dependencies = [
     "redis[hiredis]>=6.0.0",
     "typer>=0.15.2",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+]
+
+
+[tool.mypy]
+strict = true
