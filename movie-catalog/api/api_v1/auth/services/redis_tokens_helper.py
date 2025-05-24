@@ -23,8 +23,8 @@ class RedisTokensHelper(AbstractTokensHelper):
         )
         self.tokens_set_name = tokens_set_name
 
-    def get_tokens(self) -> set[str]:
-        return self.redis.smembers(self.tokens_set_name)
+    def get_tokens(self) -> list[str]:
+        return list(self.redis.smembers(self.tokens_set_name))
 
     def token_exists(self, token: str) -> bool:
         return bool(

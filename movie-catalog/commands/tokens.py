@@ -3,6 +3,7 @@ from typing import Annotated
 import typer
 from rich import print
 from rich.box import MARKDOWN
+from rich.markdown import Markdown
 
 from api.api_v1.auth.services import redis_tokens
 
@@ -34,10 +35,11 @@ def check(
     )
 
 
-@app.command()
-def list():
+@app.command(name="list")
+def list_tokens():
     """
-    Get a list of all tokens.
+    Get list of all tokens.
     """
+    print(Markdown("# List of all available tokens."))
     for idx, token in enumerate(redis_tokens.get_tokens(), start=1):
-        print(f"{idx}. [green bold]{token}[/green bold]")
+        print(f"{idx}. [bold]{token}[/bold]")
