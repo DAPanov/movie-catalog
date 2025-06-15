@@ -1,8 +1,13 @@
+from os import getenv
 from unittest import TestCase
 
 from pydantic import ValidationError
 
+from core.config import TEST_ENVIRONMENT_MSG_ERROR
 from schemas.movie import Movie, MovieCreate, MoviePartialUpdate, MovieUpdate
+
+if getenv("TESTING") != "1":
+    raise OSError(TEST_ENVIRONMENT_MSG_ERROR)
 
 
 class MovieCreateTestCase(TestCase):
@@ -22,7 +27,7 @@ class MovieCreateTestCase(TestCase):
     def test_movie_can_be_created_from_created_schema_with_sub_test(self) -> None:
         slugs = [
             "movie",
-            "sl",
+            "sluggg",
             "slg",
         ]
 
