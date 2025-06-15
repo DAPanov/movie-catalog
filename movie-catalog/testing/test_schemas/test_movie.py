@@ -53,6 +53,18 @@ class MovieCreateTestCase(TestCase):
                 title="Movie",
             )
 
+    def test_movie_slug_too_long(self) -> None:
+        with self.assertRaises(ValidationError) as exc_info:
+            MovieCreate(
+                slug="m" * 26,
+                description="Description",
+                year=1999,
+                title="Movie",
+            )
+        error_details = exc_info.exception.errors()[0]
+        expected_type = "string_too_long"
+        self.assertEqual(expected_type, error_details["type"])
+
 
 class MovieUpdateTestCase(TestCase):
     def test_movie_can_be_updated_from_update_schema(self) -> None:
