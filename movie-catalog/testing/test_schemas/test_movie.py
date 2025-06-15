@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from schemas.movie import Movie, MovieCreate, MovieUpdate
+from schemas.movie import Movie, MovieCreate, MoviePartialUpdate, MovieUpdate
 
 
 class MovieCreateTestCase(TestCase):
@@ -39,3 +39,30 @@ class MovieUpdateTestCase(TestCase):
         self.assertEqual(movie_update.title, movie.title)
         self.assertEqual(movie_update.description, movie.description)
         self.assertEqual(movie_update.year, movie.year)
+
+
+class MoviePartialUpdateTestCase(TestCase):
+    def test_movie_can_be_partial_updated_from_update_schema(self) -> None:
+        movie = Movie(
+            title="Movie",
+            description="Description",
+            year=1999,
+            slug="movie",
+        )
+
+        movie_update = MoviePartialUpdate(
+            title="Movie1",
+            description="Description1",
+        )
+
+        for field_name, value in movie_update.model_dump(exclude_unset=True).items():
+            setattr(movie, field_name, value)
+
+        if movie_update.year:
+            self.assertEqual(movie_update.year, movie.year)
+        elif movie_update.title:
+            self.assertEqual(movie_update.title, movie.title)
+        elif movie_update.description:
+            self.assertEqual(movie_update.description, movie.description)
+        else:
+            self.assertEqual(movie, movie)
