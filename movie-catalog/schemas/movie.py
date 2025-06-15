@@ -53,4 +53,4 @@ class MovieCreate(MovieBase):
     Модель для создания фильма
     """
 
-    slug: Annotated[str, Len(min_length=1, max_length=25)]
+    slug: Annotated[str, Len(min_length=3, max_length=25)]
