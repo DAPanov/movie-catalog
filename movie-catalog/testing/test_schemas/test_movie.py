@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from pydantic import ValidationError
+
 from schemas.movie import Movie, MovieCreate, MoviePartialUpdate, MovieUpdate
 
 
@@ -20,10 +22,8 @@ class MovieCreateTestCase(TestCase):
     def test_movie_can_be_created_from_created_schema_with_sub_test(self) -> None:
         slugs = [
             "movie",
-            # "very_very_very_very_long_slug",
             "sl",
             "slg",
-            # "",
         ]
 
         for slug in slugs:
@@ -40,6 +40,18 @@ class MovieCreateTestCase(TestCase):
                 self.assertEqual(movie_in.description, movie.description)
                 self.assertEqual(movie_in.year, movie.year)
                 self.assertEqual(movie_in.slug, movie.slug)
+
+    def test_movie_slug_too_short(self) -> None:
+        with self.assertRaisesRegex(
+            ValidationError,
+            expected_regex="String should have at least 3 characters",
+        ):
+            MovieCreate(
+                slug="mo",
+                description="Description",
+                year=1999,
+                title="Movie",
+            )
 
 
 class MovieUpdateTestCase(TestCase):
