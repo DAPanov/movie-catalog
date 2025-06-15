@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from .views import router as movie_router
 
 router = APIRouter(

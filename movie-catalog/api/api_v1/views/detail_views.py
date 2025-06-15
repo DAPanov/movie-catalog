@@ -1,15 +1,15 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.api_v1.crud import storage
 from api.api_v1.dependencies import prefetch_movie
 from schemas.movie import (
     Movie,
-    MovieUpdate,
     MoviePartialUpdate,
     MovieRead,
+    MovieUpdate,
 )
 
 router = APIRouter(
@@ -24,7 +24,7 @@ router = APIRouter(
                     },
                 },
             },
-        }
+        },
     },
 )
 

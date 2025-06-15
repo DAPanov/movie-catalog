@@ -1,5 +1,3 @@
-from typing import Awaitable
-
 from redis import Redis
 
 from api.api_v1.auth.services.tokens_helper import AbstractTokensHelper
@@ -31,7 +29,7 @@ class RedisTokensHelper(AbstractTokensHelper):
             self.redis.sismember(
                 self.tokens_set_name,
                 token,
-            )
+            ),
         )
 
     def add_token(self, token: str) -> None:

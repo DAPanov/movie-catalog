@@ -1,6 +1,9 @@
-from redis import Redis
 from typing import cast
+
+from redis import Redis
+
 from core import config
+
 from .users_helper import AbstractUsersHelper
 
 

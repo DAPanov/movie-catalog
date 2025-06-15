@@ -1,28 +1,25 @@
 import logging
-
 from typing import Annotated
 
 from fastapi import (
-    HTTPException,
-    status,
-    Request,
     Depends,
+    HTTPException,
+    Request,
+    status,
 )
-
 from fastapi.security import (
     HTTPAuthorizationCredentials,
-    HTTPBearer,
     HTTPBasic,
     HTTPBasicCredentials,
+    HTTPBearer,
 )
 
-from api.api_v1.crud import storage
-
-from schemas.movie import Movie
 from api.api_v1.auth.services import (
     redis_tokens,
     redis_users,
 )
+from api.api_v1.crud import storage
+from schemas.movie import Movie
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +29,7 @@ UNSAFE_METHODS = frozenset(
         "PUT",
         "PATCH",
         "DELETE",
-    }
+    },
 )
 
 static_api_token = HTTPBearer(
@@ -96,7 +93,8 @@ def validate_basic_auth(
     credentials: HTTPBasicCredentials | None,
 ) -> None:
     if credentials and redis_users.validate_user_password(
-        credentials.username, credentials.password
+        credentials.username,
+        credentials.password,
     ):
         log.info(
             "Username = %s and password = %s",
@@ -139,7 +137,7 @@ def api_token_or_user_basic_auth_required_for_unsafe_methods(
     ] = None,
 ) -> None:
     if request.method not in UNSAFE_METHODS:
-        return
+        return None
 
     if credentials:
         return validate_basic_auth(credentials=credentials)

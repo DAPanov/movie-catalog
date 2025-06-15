@@ -7,8 +7,8 @@ from core import config
 from schemas.movie import (
     Movie,
     MovieCreate,
-    MovieUpdate,
     MoviePartialUpdate,
+    MovieUpdate,
 )
 
 log = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ class MovieBaseError(Exception):
     """
 
 
-class MovieAlreadyExists(Exception):
+class MovieAlreadyExistsError(Exception):
     """
     Raised on movie creation if such slug already exists.
     """
@@ -59,13 +59,13 @@ class MovieStorage(BaseModel):
             redis.hexists(
                 name=config.REDIS_HASH_MOVIES_CATALOG_NAME,
                 key=slug,
-            )
+            ),
         )
 
     def create_or_raise_if_exists(self, movie_in: MovieCreate) -> Movie:
         if not self.exists(movie_in.slug):
             return self.create(movie_in)
-        raise MovieAlreadyExists(movie_in.slug)
+        raise MovieAlreadyExistsError(movie_in.slug)
 
     def create(self, movie_in: MovieCreate) -> Movie:
         movie = Movie(
