@@ -17,6 +17,30 @@ class MovieCreateTestCase(TestCase):
         self.assertEqual(movie_in.year, movie.year)
         self.assertEqual(movie_in.slug, movie.slug)
 
+    def test_movie_can_be_created_from_created_schema_with_sub_test(self) -> None:
+        slugs = [
+            "movie",
+            # "very_very_very_very_long_slug",
+            "sl",
+            "slg",
+            # "",
+        ]
+
+        for slug in slugs:
+            with self.subTest(slug=slug, msg=f"slug-test-{slug}"):
+                movie_in = MovieCreate(
+                    title="Movie",
+                    description="Description",
+                    year=1999,
+                    slug=slug,
+                )
+
+                movie = Movie(**movie_in.model_dump())
+                self.assertEqual(movie_in.title, movie.title)
+                self.assertEqual(movie_in.description, movie.description)
+                self.assertEqual(movie_in.year, movie.year)
+                self.assertEqual(movie_in.slug, movie.slug)
+
 
 class MovieUpdateTestCase(TestCase):
     def test_movie_can_be_updated_from_update_schema(self) -> None:
@@ -50,10 +74,7 @@ class MoviePartialUpdateTestCase(TestCase):
             slug="movie",
         )
 
-        movie_update = MoviePartialUpdate(
-            title="Movie1",
-            description="Description1",
-        )
+        movie_update = MoviePartialUpdate()
 
         for field_name, value in movie_update.model_dump(exclude_unset=True).items():
             setattr(movie, field_name, value)
