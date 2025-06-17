@@ -1,14 +1,9 @@
-import random
-import string
-from os import getenv
+import secrets
 from typing import ClassVar
 from unittest import TestCase
 
 from api.api_v1.crud import storage
 from schemas.movie import Movie, MovieCreate, MoviePartialUpdate, MovieUpdate
-
-if getenv("TESTING") != "1":
-    raise OSError("Environment is not ready for testing")  # noqa: TRY003, EM101
 
 
 def create_movie() -> Movie:
@@ -16,13 +11,9 @@ def create_movie() -> Movie:
         title="title",
         description="description",
         year=1999,
-        slug="".join(
-            random.choices(
-                string.ascii_letters,
-                k=8,
-            ),
-        ),
+        slug=secrets.token_hex(7),
     )
+
     return storage.create(movie_in)
 
 
