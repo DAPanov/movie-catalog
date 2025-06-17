@@ -102,16 +102,9 @@ class MoviePartialUpdateTestCase(TestCase):
             slug="movie",
         )
 
-        movie_update = MoviePartialUpdate()
+        movie_update = MoviePartialUpdate(title="Movie2")
 
         for field_name, value in movie_update.model_dump(exclude_unset=True).items():
             setattr(movie, field_name, value)
 
-        if movie_update.year:
-            self.assertEqual(movie_update.year, movie.year)
-        elif movie_update.title:
-            self.assertEqual(movie_update.title, movie.title)
-        elif movie_update.description:
-            self.assertEqual(movie_update.description, movie.description)
-        else:
-            self.assertEqual(movie, movie)
+        self.assertEqual(movie_update.title, movie.title)
