@@ -64,5 +64,5 @@ def create_movie(movie_create: MovieCreate) -> Movie:
     except MovieAlreadyExistsError as exc:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Movie with slug={movie_create.slug!r} already exists",
+            detail=f"Movie with slug={movie_create.slug!r} already exists.",
         ) from exc

@@ -1,25 +1,16 @@
-import secrets
 from typing import ClassVar
 from unittest import TestCase
 
-from api.api_v1.crud import storage
+import pytest
+
+from api.api_v1.crud import MovieAlreadyExistsError, storage
 from schemas.movie import Movie, MovieCreate, MoviePartialUpdate, MovieUpdate
-
-
-def create_movie() -> Movie:
-    movie_in = MovieCreate(
-        title="title",
-        description="description",
-        year=1999,
-        slug=secrets.token_hex(7),
-    )
-
-    return storage.create(movie_in)
+from testing.conftest import create_movie_random_slug
 
 
 class MovieStorageUpdateTestCase(TestCase):
     def setUp(self) -> None:
-        self.movie = create_movie()
+        self.movie = create_movie_random_slug()
 
     def tearDown(self) -> None:
         storage.delete_by_slug(self.movie.slug)
@@ -62,7 +53,7 @@ class MovieStorageGetMovieTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.movies = [create_movie() for _ in range(cls.SHORT_MOVIE_COUNT)]
+        cls.movies = [create_movie_random_slug() for _ in range(cls.SHORT_MOVIE_COUNT)]
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -82,3 +73,10 @@ class MovieStorageGetMovieTestCase(TestCase):
             with self.subTest(movie=movie, msg=f"Validate can get slug {movie.slug!r}"):
                 db_movie = storage.get_by_slug(slug=movie.slug)
                 self.assertEqual(movie.slug, db_movie.slug)
+
+
+def test_create_or_raise_exists(movie: Movie) -> None:
+    movie_create = MovieCreate(**movie.model_dump())
+    with pytest.raises(MovieAlreadyExistsError, match=movie_create.slug) as exc_info:
+        storage.create_or_raise_if_exists(movie_create)
+    assert exc_info.value.args[0] == movie_create.slug
