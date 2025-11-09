@@ -8,6 +8,20 @@ Check GitHub Actions after any push.
 
  - Mark movie-catalog folder as source root
 
+### Install dependencies
+
+Install all packages:
+```shell
+uv sync
+```
+
+### Configure pre-commit
+
+Install pre-commit hook:
+```shell
+pre-commit install
+```
+
 ### Run
 
 Go to workdir:
