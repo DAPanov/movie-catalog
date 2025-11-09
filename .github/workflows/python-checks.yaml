@@ -7,6 +7,7 @@ on:
     branches:
       - main
     paths:
+      - ".github/workflows/**"
       - "movie-catalog/**"
 
 jobs:
@@ -22,4 +23,4 @@ jobs:
           python -m pip install --upgrade pip
           pip install "black==25.1.0"
       - name: Black ⚫
-        run: black ./
+        run: black --check --diff ./
