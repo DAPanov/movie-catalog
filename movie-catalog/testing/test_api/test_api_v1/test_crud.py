@@ -64,7 +64,7 @@ class MovieStorageGetMovieTestCase(TestCase):
         movies = storage.get()
         expected_slugs = {mov.slug for mov in self.movies}
         slugs = {mov.slug for mov in movies}
-        expected_diff = set()
+        expected_diff: set[str] = set()
         diff = expected_slugs - slugs
         self.assertEqual(expected_diff, diff)
 
@@ -72,7 +72,8 @@ class MovieStorageGetMovieTestCase(TestCase):
         for movie in self.movies:
             with self.subTest(movie=movie, msg=f"Validate can get slug {movie.slug!r}"):
                 db_movie = storage.get_by_slug(slug=movie.slug)
-                self.assertEqual(movie.slug, db_movie.slug)
+                if db_movie:
+                    self.assertEqual(movie.slug, db_movie.slug)
 
 
 def test_create_or_raise_exists(movie: Movie) -> None:

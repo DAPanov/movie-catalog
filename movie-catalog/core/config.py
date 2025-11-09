@@ -11,7 +11,7 @@ LOG_FORMAT = (
 
 
 REDIS_HOST = "localhost"
-REDIS_PORT = os.getenv("REDIS_PORT", 0) or 6379  # noqa: PLW1508
+REDIS_PORT = int(os.getenv("REDIS_PORT", 0)) or 6379  # noqa: PLW1508
 REDIS_DB = 0
 REDIS_DB_TOKENS = 1
 REDIS_DB_USERS = 2
