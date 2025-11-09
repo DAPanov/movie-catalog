@@ -2,7 +2,9 @@
 
 ## Develop
 
-Setup:
+Check GitHub Actions after any push.
+
+### Setup:
 
  - Mark movie-catalog folder as source root
 
