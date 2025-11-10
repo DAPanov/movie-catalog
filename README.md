@@ -1,5 +1,7 @@
 # FastAPI Movie catalog
 
+[![Python checks 🐍](https://github.com/DAPanov/movie-catalog/actions/workflows/python-checks.yaml/badge.svg)](https://github.com/DAPanov/movie-catalog/actions/workflows/python-checks.yaml)
+
 ## Develop
 
 Check GitHub Actions after any push.
