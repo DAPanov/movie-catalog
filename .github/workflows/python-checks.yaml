@@ -70,5 +70,5 @@ jobs:
         run: uv run pytest
         env:
           TESTING: 1
-          URL_SHORTENER__REDIS__CONNECTION__HOST: redis
-          URL_SHORTENER__REDIS__CONNECTION__PORT: 6379
+          MOVIE_CATALOG__REDIS__CONNECTION__HOST: redis
+          MOVIE_CATALOG__REDIS__CONNECTION__PORT: 6379
