@@ -43,6 +43,10 @@ Run dev server:
 fastapi dev
 ```
 
+### Run tests
+
+uv run pytest
+
 ## Snippets
 ```shell
 python -c 'import secrets;print(secrets.token_urlsafe(16))'
