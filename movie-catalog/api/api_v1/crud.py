@@ -8,7 +8,7 @@ import logging
 from pydantic import BaseModel
 from redis import Redis
 
-from core import config
+from core.config import settings
 from schemas.movie import (
     Movie,
     MovieCreate,
@@ -19,9 +19,9 @@ from schemas.movie import (
 log = logging.getLogger(__name__)
 
 redis = Redis(
-    host=config.REDIS_HOST,
-    port=config.REDIS_PORT,
-    db=config.REDIS_DB_MOVIES_CATALOG,
+    host=settings.redis.connection.host,
+    port=settings.redis.connection.port,
+    db=settings.redis.db.movies_catalog,
     decode_responses=True,
 )
 
@@ -39,14 +39,15 @@ class MovieAlreadyExistsError(Exception):
 
 
 class MovieStorage(BaseModel):
+    movie_catalog_name: str
 
     def get(self) -> list[Movie]:
-        data = redis.hvals(config.REDIS_HASH_MOVIES_CATALOG_NAME)
+        data = redis.hvals(self.movie_catalog_name)
         return [Movie.model_validate_json(movie) for movie in data]
 
     def get_by_slug(self, slug: str) -> Movie | None:
         if data := redis.hget(
-            name=config.REDIS_HASH_MOVIES_CATALOG_NAME,
+            name=self.movie_catalog_name,
             key=slug,
         ):
             return Movie.model_validate_json(data)
@@ -54,7 +55,7 @@ class MovieStorage(BaseModel):
 
     def set_movie_attr(self, movie: Movie) -> None:
         redis.hset(
-            name=config.REDIS_HASH_MOVIES_CATALOG_NAME,
+            name=self.movie_catalog_name,
             key=movie.slug,
             value=movie.model_dump_json(),
         )
@@ -62,7 +63,7 @@ class MovieStorage(BaseModel):
     def exists(self, slug: str) -> bool:
         return bool(
             redis.hexists(
-                name=config.REDIS_HASH_MOVIES_CATALOG_NAME,
+                name=self.movie_catalog_name,
                 key=slug,
             ),
         )
@@ -81,7 +82,7 @@ class MovieStorage(BaseModel):
         return movie
 
     def delete_by_slug(self, slug: str) -> None:
-        redis.hdel(config.REDIS_HASH_MOVIES_CATALOG_NAME, slug)
+        redis.hdel(self.movie_catalog_name, slug)
 
     def delete(self, movie: Movie) -> None:
         self.delete_by_slug(slug=movie.slug)
@@ -99,4 +100,6 @@ class MovieStorage(BaseModel):
         return movie
 
 
-storage = MovieStorage()
+storage = MovieStorage(
+    movie_catalog_name=settings.redis.collections_names.movies_catalog_name,
+)
