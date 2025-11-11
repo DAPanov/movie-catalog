@@ -1,3 +1,8 @@
+__all__ = (
+    "MovieAlreadyExistsError",
+    "storage",
+)
+
 import logging
 
 from pydantic import BaseModel
