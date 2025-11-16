@@ -1,7 +1,9 @@
+from typing import cast
+
 from redis import Redis
 
-from api.api_v1.auth.services.tokens_helper import AbstractTokensHelper
 from core.config import settings
+from services.auth.tokens_helper import AbstractTokensHelper
 
 
 class RedisTokensHelper(AbstractTokensHelper):
@@ -22,7 +24,7 @@ class RedisTokensHelper(AbstractTokensHelper):
         self.tokens_set_name = tokens_set_name
 
     def get_tokens(self) -> list[str]:
-        return list(self.redis.smembers(self.tokens_set_name))
+        return list(cast(set[str], self.redis.smembers(self.tokens_set_name)))
 
     def token_exists(self, token: str) -> bool:
         return bool(

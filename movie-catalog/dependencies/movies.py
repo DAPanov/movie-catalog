@@ -6,7 +6,7 @@ from storage.movies import MovieStorage
 
 
 def get_movies_storage(request: Request) -> MovieStorage:
-    return request.app.state.movies_storage
+    return request.app.state.movies_storage  # type: ignore[no-any-return]
 
 
 GetMoviesStorage = Annotated[

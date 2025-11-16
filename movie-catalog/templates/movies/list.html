@@ -28,8 +28,12 @@
           {% endfor %}
         </table>
       </div>
+      <div>
+        <a class="btn btn-outline-primary" href="{{ url_for('movies:create-view') }}">Create new</a>
+      </div>
     {% else %}
       <h2>Not movies yet</h2>
+      <h3>You can <a href="{{ url_for('movies:create-view') }}">create a new one</a></h3>
     {% endif %}
   </div>
 {% endblock %}

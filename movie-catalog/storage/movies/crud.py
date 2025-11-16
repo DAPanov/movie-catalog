@@ -4,6 +4,8 @@ __all__ = (
 )
 
 import logging
+from collections.abc import Iterable
+from typing import cast
 
 from pydantic import BaseModel
 from redis import Redis
@@ -31,14 +33,20 @@ class MovieStorage(BaseModel):
     movie_catalog_name: str
 
     def get(self) -> list[Movie]:
-        data = redis.hvals(self.movie_catalog_name)
-        return [Movie.model_validate_json(movie) for movie in data]
+        return [
+            Movie.model_validate_json(value)
+            for value in cast(
+                Iterable[str],
+                redis.hvals(name=self.movie_catalog_name),
+            )
+        ]
 
     def get_by_slug(self, slug: str) -> Movie | None:
         if data := redis.hget(
             name=self.movie_catalog_name,
             key=slug,
         ):
+            assert isinstance(data, str)
             return Movie.model_validate_json(data)
         return None
 

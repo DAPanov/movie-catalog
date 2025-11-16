@@ -4,7 +4,7 @@ import typer
 from rich import print
 from rich.markdown import Markdown
 
-from api.api_v1.auth.services import redis_tokens as tokens
+from services.auth import redis_tokens as tokens
 
 app = typer.Typer(
     name="token",
