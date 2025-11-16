@@ -6,7 +6,8 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.115.12",
-    "pydantic-settings>=2.12.0",
+    "jinja2>=3.1.6",
+    "pydantic-settings[yaml]>=2.12.0",
     "redis[hiredis]>=6.0.0",
     "typer>=0.15.2",
 ]
@@ -31,7 +32,9 @@ addopts = "-ra --strict-markers"
 log_cli = false
 log_cli_level = "INFO"
 console_output_style = "progress"
-markers = ["apitest: test any http api call",]
+markers = [
+    "apitest: test any http api call",
+    "templatetest: test any http HTML template page",]
 xfail_strict = true
 
 #mypy settings
@@ -101,7 +104,7 @@ select = [
     "B", # flake8-bugbear (B)
     "COM", # flake8-commas (COM)
     "C4", # flake8-comprehensions (C4)
-    "DTZ", # flake8-datetimez (DTZ)
+    #"DTZ", # flake8-datetimez (DTZ)
     "T10", # flake8-debugger (T10)
     "EM", # flake8-errmsg (EM)
     "ISC", # flake8-implicit-str-concat (ISC)

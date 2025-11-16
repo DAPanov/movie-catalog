@@ -5,8 +5,8 @@ from os import getenv
 import pytest
 from _pytest.fixtures import SubRequest
 
-from api.api_v1.crud import storage
 from schemas.movie import Movie, MovieCreate
+from storage.movies.crud import storage
 
 
 @pytest.fixture(scope="session", autouse=True)

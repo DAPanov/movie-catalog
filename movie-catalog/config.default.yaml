@@ -1,0 +1,6 @@
+movie-catalog:
+  redis:
+    connection:
+      db:
+        default: 1
+        tokens: 10

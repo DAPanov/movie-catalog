@@ -2,9 +2,9 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from api.api_v1.crud import storage
 from main import app
 from schemas.movie import Movie
+from storage.movies.crud import storage
 
 
 @pytest.mark.apitest

@@ -3,8 +3,9 @@ from unittest import TestCase
 
 import pytest
 
-from api.api_v1.crud import MovieAlreadyExistsError, storage
 from schemas.movie import Movie, MovieCreate, MoviePartialUpdate, MovieUpdate
+from storage.movies.crud import storage
+from storage.movies.exceptions import MovieAlreadyExistsError
 from testing.conftest import create_movie_random_slug
 
 

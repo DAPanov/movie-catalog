@@ -18,7 +18,7 @@ from api.api_v1.auth.services import (
     redis_tokens,
     redis_users,
 )
-from api.api_v1.crud import storage
+from dependencies.movies import GetMoviesStorage
 from schemas.movie import Movie
 
 log = logging.getLogger(__name__)
@@ -46,7 +46,10 @@ user_basic_auth = HTTPBasic(
 )
 
 
-def prefetch_movie(slug: str) -> Movie:
+def prefetch_movie(
+    slug: str,
+    storage: GetMoviesStorage,
+) -> Movie:
     movie: Movie | None = storage.get_by_slug(slug)
     if movie:
         return movie

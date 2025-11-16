@@ -3,9 +3,9 @@ import logging
 from fastapi import FastAPI
 
 from api import router
-from api.main_views import router as main_router
 from app_lifespan import lifespan
 from core.config import settings
+from views import router as views_router
 
 logging.basicConfig(
     level=settings.logging.log_level,
@@ -19,4 +19,4 @@ app = FastAPI(
 )
 
 app.include_router(router)
-app.include_router(main_router)
+app.include_router(views_router)

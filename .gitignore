@@ -174,5 +174,5 @@ cython_debug/
 .pypirc
 
 .secrets
-
+movie-catalog/config.local.yaml
 *.json

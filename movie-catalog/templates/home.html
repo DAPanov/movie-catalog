@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+  Home - {{ super() }}
+{% endblock %}
+{% block main %}
+  <div class="container">
+    <h1> Hello, Movie Catalog!</h1>
+    <div>
+      <a href="/docs">Swagger Docs</a>
+    </div>
+    <h3 class="mt-5">Features:</h3>
+    <ul class="list-group">
+      {% for feature in features %}
+        <li class="list-group-item">
+          {{ feature }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
